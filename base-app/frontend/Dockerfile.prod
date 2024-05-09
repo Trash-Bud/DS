@@ -1,0 +1,26 @@
+FROM cirrusci/flutter:3.3.2 as build
+
+WORKDIR /usr/src/app
+
+RUN flutter doctor
+
+RUN flutter config --enable-web
+
+COPY pat pat
+
+COPY pubspec.yaml pubspec.yaml
+
+COPY pubspec.lock pubspec.lock
+
+RUN cd pat && ./replace_pat.sh && cd ..
+
+COPY assets/ assets/
+
+RUN flutter pub get
+
+COPY . .
+
+RUN flutter build web --release
+
+FROM nginx:stable-alpine
+COPY --from=build /usr/src/app/build/web/ /usr/share/nginx/html/

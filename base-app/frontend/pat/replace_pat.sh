@@ -1,0 +1,1 @@
+sed -i 's/https:\/\/github.com\/FEUP-MEIC-DS-2022-1MEIC01\/design-system.git/'"https:\/\/any:$(cat pat)@github.com\/FEUP-MEIC-DS-2022-1MEIC01\/design-system.git/g" ../pubspec.yaml

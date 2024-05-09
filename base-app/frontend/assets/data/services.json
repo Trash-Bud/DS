@@ -1,0 +1,23 @@
+[
+    {
+        "icon": "61484",
+        "fontFamily": "FontAwesomeSolid",
+        "fontPackage": "font_awesome_flutter",
+        "name": "Catalog",
+        "url": "http://dev-maersk-catalog.duckdns.org/"
+    },
+    {
+        "icon": "62069",
+        "fontFamily": "FontAwesomeSolid",
+        "fontPackage": "font_awesome_flutter",
+        "name": "Inbound",
+        "url": "http://dev-maersk-inbound.duckdns.org/"
+    },
+    {
+        "icon": "62096",
+        "fontFamily": "FontAwesomeSolid",
+        "fontPackage": "font_awesome_flutter",
+        "name": "Brand Config",
+        "url": "http://dev-maersk-config.duckdns.org/"
+    }
+]

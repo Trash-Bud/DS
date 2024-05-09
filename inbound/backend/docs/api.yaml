@@ -1,0 +1,394 @@
+openapi: 3.0.1
+info:
+  title: backend
+  version: '1.0'
+paths:
+  /asn:
+    get:
+      tags:
+        - ASN
+      operationId: GetASNs
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ASN'
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ASN'
+            text/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ASN'
+    post:
+      tags:
+        - ASN
+      operationId: CreateASN
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ASNDTO'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/ASNDTO'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/ASNDTO'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ASN'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ASN'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ASN'
+  '/asn/{id}':
+    get:
+      tags:
+        - ASN
+      operationId: GetASN
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ASN'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ASN'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ASN'
+  /:
+    get:
+      tags:
+        - Home
+      operationId: Life Check
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: object
+                additionalProperties:
+                  type: boolean
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: boolean
+            text/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: boolean
+  /purchase-orders:
+    get:
+      tags:
+        - PurchaseOrder
+      operationId: 'GetPurchaseOrders/{query?}/{state?}'
+      parameters:
+        - name: query
+          in: query
+          schema:
+            type: string
+        - name: state
+          in: query
+          schema:
+            $ref: '#/components/schemas/PurchaseOrderState'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PurchaseOrder'
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PurchaseOrder'
+            text/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PurchaseOrder'
+  '/purchase-orders/{purchaseOrderNumber}':
+    get:
+      tags:
+        - PurchaseOrder
+      operationId: GetPurchaseOrder
+      parameters:
+        - name: purchaseOrderNumber
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/PurchaseOrder'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseOrder'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseOrder'
+  /purchase-orders/new:
+    post:
+      tags:
+        - PurchaseOrder
+      operationId: CreatePurchaseOrder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PurchaseOrderDTO'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/PurchaseOrderDTO'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/PurchaseOrderDTO'
+      responses:
+        '200':
+          description: Success
+  '/purchase-orders/{purchaseOrderNumber}/asn':
+    get:
+      tags:
+        - PurchaseOrder
+      operationId: GetASNsByPurchaseOrder
+      parameters:
+        - name: purchaseOrderNumber
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ASN'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ASN'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ASN'
+  '/purchase-orders/{purchaseOrderNumber}/cancel':
+    put:
+      tags:
+        - PurchaseOrder
+      operationId: CancelPurchaseOrder
+      parameters:
+        - name: purchaseOrderNumber
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Success
+components:
+  schemas:
+    ASN:
+      required:
+        - expectedDeliveryDate
+        - shipmentReference
+        - state
+        - warehouse
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        shipmentReference:
+          maxLength: 256
+          type: string
+        state:
+          $ref: '#/components/schemas/ASNState'
+        address:
+          maxLength: 256
+          type: string
+          nullable: true
+        warehouse:
+          maxLength: 256
+          type: string
+        expectedDeliveryDate:
+          type: string
+          format: date-time
+        carrierName:
+          maxLength: 256
+          type: string
+          nullable: true
+        type:
+          $ref: '#/components/schemas/CargoType'
+        shipperContact:
+          maxLength: 256
+          type: string
+          nullable: true
+        purchaseOrderId:
+          type: integer
+          format: int32
+          nullable: true
+        purchaseOrderDate:
+          type: string
+          format: date-time
+          nullable: true
+        productList:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+          nullable: true
+      additionalProperties: false
+    ASNDTO:
+      required:
+        - expectedDeliveryDate
+        - shipmentReference
+        - warehouse
+      type: object
+      properties:
+        shipmentReference:
+          type: string
+        warehouse:
+          type: string
+        expectedDeliveryDate:
+          type: string
+          format: date-time
+        purchaseOrderId:
+          type: integer
+          format: int32
+          nullable: true
+      additionalProperties: false
+    ASNState:
+      enum:
+        - Pending
+        - Booked
+        - Received
+        - Cancelled
+      type: string
+    CargoType:
+      enum:
+        - Normal
+        - Dangerous
+      type: string
+    Product:
+      required:
+        - name
+        - quantity
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        quantity:
+          type: integer
+          format: int32
+      additionalProperties: false
+    PurchaseOrder:
+      required:
+        - asNs
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        poIdentification:
+          type: string
+          nullable: true
+        state:
+          $ref: '#/components/schemas/PurchaseOrderState'
+        name:
+          type: string
+          nullable: true
+        supplier:
+          type: string
+          nullable: true
+        receivedItems:
+          type: integer
+          format: int32
+        totalItems:
+          type: integer
+          format: int32
+          nullable: true
+        asNs:
+          type: array
+          items:
+            $ref: '#/components/schemas/ASN'
+      additionalProperties: false
+    PurchaseOrderDTO:
+      type: object
+      properties:
+        poIdentification:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+        supplier:
+          type: string
+          nullable: true
+        totalItems:
+          type: integer
+          format: int32
+          nullable: true
+      additionalProperties: false
+    PurchaseOrderState:
+      enum:
+        - Open
+        - In Progress
+        - Archived
+        - Cancelled
+      type: string

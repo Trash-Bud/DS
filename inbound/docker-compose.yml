@@ -1,0 +1,102 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  dev-inbound-fe:
+    stdin_open: true # Allow hot reload
+    tty: true
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./frontend/lib:/usr/src/app/lib
+  test-inbound-fe:
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile.test
+    volumes:
+      - ./frontend/lib:/usr/src/app/lib
+      - ./frontend/test:/usr/src/app/test
+  prod-inbound-fe:
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile.prod
+    ports:
+      - "80:80"
+  dev-inbound-be:
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    volumes:
+      - ./backend/src:/usr/src/app/src
+    depends_on:
+      - db-inbound-migrate
+  prod-inbound-be:
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile.prod
+    ports:
+      - "8080:8080"
+  test-inbound-be:
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile.test
+    volumes:
+      - ./backend/src:/usr/src/app/src
+      - ./backend/test:/usr/src/app/test
+      - ./backend/integrations-tests:/usr/src/app/integrations-tests
+    depends_on:
+      - db-inbound-migrate
+  db-inbound-migrate:
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile.migrate
+  postgres:
+    image: postgres:11.13
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pg!password
+    ports:
+      - "5432:5432"
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: postgres@maersk.com
+      PGADMIN_DEFAULT_PASSWORD: pg!password
+    ports:
+      - "4321:80"
+    depends_on:
+      - postgres
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181:2181"
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+      - "9092:9092"
+    hostname: kafka
+    depends_on: 
+      - zookeeper
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_ADVERTISED_PORT: 9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  kafka-ui:
+    image: provectuslabs/kafka-ui
+    container_name: kafka-ui
+    depends_on:
+      - kafka
+    ports:
+      - "9000:8080"
+    restart: "no"
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=test
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
+      - KAFKA_CLUSTERS_0_ZOOKEEPER=0.0.0.0:2181

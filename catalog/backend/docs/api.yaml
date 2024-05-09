@@ -1,0 +1,543 @@
+openapi: 3.0.1
+info:
+  title: backend
+  version: '1.0'
+paths:
+  /brands:
+    get:
+      tags:
+        - Brand
+      operationId: GetBrands
+      responses:
+        '200':
+          description: Success
+  '/brands/{id}':
+    get:
+      tags:
+        - Brand
+      operationId: GetBrand
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Success
+  /brands/add:
+    post:
+      tags:
+        - Brand
+      operationId: CreateBrand
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BrandDTO'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/BrandDTO'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/BrandDTO'
+      responses:
+        '200':
+          description: Success
+  /:
+    get:
+      tags:
+        - Home
+      operationId: HealthCheck
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+            text/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+  /products:
+    get:
+      tags:
+        - Product
+      operationId: GetProducts
+      responses:
+        '200':
+          description: Success
+  '/products/{id}':
+    get:
+      tags:
+        - Product
+      operationId: GetProduct
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Success
+  /products/add:
+    post:
+      tags:
+        - Product
+      operationId: CreateProduct
+      parameters:
+        - name: brandId
+          in: query
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductDTO'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/ProductDTO'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/ProductDTO'
+      responses:
+        '200':
+          description: Success
+  '/products/{id}/variants':
+    get:
+      tags:
+        - Product
+      operationId: GetProductVariants
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Success
+  '/products/{productId}':
+    put:
+      tags:
+        - Product
+      operationId: EditProduct
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductDTO'
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /variants:
+    get:
+      tags:
+        - Variant
+      operationId: GetVariants
+      parameters:
+        - name: pageNumber
+          in: query
+          schema:
+            type: integer
+            format: int32
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            format: int32
+        - name: q
+          in: query
+          schema:
+            type: string
+        - name: brandId
+          in: query
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Success
+  /variants/pages:
+    get:
+      tags:
+        - Variant
+      operationId: GetVariantsNumberOfPages
+      parameters:
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            format: int32
+        - name: q
+          in: query
+          schema:
+            type: string
+        - name: brandId
+          in: query
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Success
+  '/variants/{id}':
+    get:
+      tags:
+        - Variant
+      operationId: GetVariant
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Success
+  /variants/add:
+    post:
+      tags:
+        - Variant
+      operationId: CreateVariant
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VariantDTO'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/VariantDTO'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/VariantDTO'
+      responses:
+        '200':
+          description: Success
+  '/variants/{variantId}':
+    put:
+      tags:
+        - Variant
+      operationId: EditVariant
+      parameters:
+        - name: variantId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VariantDTO'
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  '/variants/archive/{id}':
+    post:
+      tags:
+        - Variant
+      operationId: ArchiveVariant
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IsArchivedDTO'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/IsArchivedDTO'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/IsArchivedDTO'
+      responses:
+        '200':
+          description: Success
+  /variants/template:
+    get:
+      tags:
+        - Variant
+      operationId: VariantsTemplate
+      responses:
+        '200':
+          description: Success
+  /variants/import:
+    post:
+      tags:
+        - Variant
+      operationId: ImportVariants
+      parameters:
+        - name: brandId
+          in: query
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                ContentType:
+                  type: string
+                ContentDisposition:
+                  type: string
+                Headers:
+                  type: object
+                  additionalProperties:
+                    type: array
+                    items:
+                      type: string
+                Length:
+                  type: integer
+                  format: int64
+                Name:
+                  type: string
+                FileName:
+                  type: string
+            encoding:
+              ContentType:
+                style: form
+              ContentDisposition:
+                style: form
+              Headers:
+                style: form
+              Length:
+                style: form
+              Name:
+                style: form
+              FileName:
+                style: form
+      responses:
+        '200':
+          description: Success
+components:
+  schemas:
+    BrandDTO:
+      required:
+        - name
+      type: object
+      properties:
+        name:
+          type: string
+      additionalProperties: false
+    IsArchivedDTO:
+      type: object
+      properties:
+        isArchived:
+          type: boolean
+      additionalProperties: false
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        status:
+          type: integer
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          nullable: true
+        instance:
+          type: string
+          nullable: true
+      additionalProperties: { }
+    ProductDTO:
+      required:
+        - family
+        - name
+        - supplier
+        - type
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        season:
+          type: string
+          nullable: true
+        supplier:
+          type: string
+        type:
+          type: string
+        family:
+          type: string
+        subFamily:
+          type: string
+          nullable: true
+      additionalProperties: false
+    VariantDTO:
+      required:
+        - barcode
+        - composition
+        - country
+        - currency
+        - depth
+        - height
+        - hscode
+        - productId
+        - sku
+        - variantDescription
+        - weight
+        - width
+      type: object
+      properties:
+        productId:
+          type: integer
+          format: int32
+        prePackedItem:
+          type: string
+          nullable: true
+        sku:
+          type: string
+        barcode:
+          type: string
+        variantDescription:
+          type: string
+        composition:
+          type: string
+        hscode:
+          type: string
+        country:
+          type: string
+        gender:
+          type: string
+          nullable: true
+        ageGroup:
+          type: string
+          nullable: true
+        color:
+          type: string
+          nullable: true
+        size:
+          type: string
+          nullable: true
+        fabric:
+          type: string
+          nullable: true
+        width:
+          type: number
+          format: double
+        height:
+          type: number
+          format: double
+        depth:
+          type: number
+          format: double
+        weight:
+          type: number
+          format: double
+        priceRetail:
+          type: number
+          format: double
+          nullable: true
+        priceWholesale:
+          type: number
+          format: double
+          nullable: true
+        cost:
+          type: number
+          format: double
+          nullable: true
+        currency:
+          type: string
+        dangerous:
+          type: integer
+          format: int32
+          nullable: true
+        un:
+          type: integer
+          format: int32
+          nullable: true
+        packingCode:
+          type: integer
+          format: int32
+          nullable: true
+        isArchived:
+          type: boolean
+      additionalProperties: false

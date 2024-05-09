@@ -1,0 +1,31 @@
+FROM cirrusci/flutter:3.3.2 as build
+
+ARG BACKEND_URL
+
+WORKDIR /usr/src/app
+
+COPY pat pat
+
+RUN flutter doctor
+
+RUN flutter config --enable-web
+
+COPY pubspec.yaml pubspec.yaml
+
+COPY pubspec.lock pubspec.lock
+
+RUN cd pat && ./replace_pat.sh && cd ..
+
+RUN flutter pub get
+
+COPY . .
+
+RUN mkdir -p assets
+RUN echo "BACKEND_URL=$BACKEND_URL" > assets/.env
+
+RUN cat assets/.env
+
+RUN flutter build web --release
+
+FROM nginx:stable-alpine
+COPY --from=build /usr/src/app/build/web /usr/share/nginx/html

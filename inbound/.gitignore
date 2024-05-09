@@ -1,0 +1,10 @@
+# Deploy security
+pat/pat
+
+# Editor specific
+
+.vscode
+.idea
+
+# User specific
+*.DotSettings.user

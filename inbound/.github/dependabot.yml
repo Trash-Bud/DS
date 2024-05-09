@@ -1,0 +1,12 @@
+version: 2
+enable-beta-ecosystems: true
+updates: 
+  - package-ecosystem: "nuget"
+    directory: "/backend"
+    schedule:
+        interval: "daily"
+
+  - package-ecosystem: "pub"
+    directory: "/frontend"
+    schedule:
+        interval: "daily"

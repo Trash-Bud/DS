@@ -1,0 +1,58 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  dev-catalog-fe:
+    stdin_open: true # Allow hot reload
+    tty: true
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend/lib:/usr/src/app/lib
+  test-catalog-fe:
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile.test
+    volumes:
+      - ./frontend/lib:/usr/src/app/lib
+      - ./frontend/test:/usr/src/app/test
+  prod-catalog-fe:
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile.prod
+    ports:
+      - "80:80"
+  dev-catalog-be:
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    volumes:
+      - ./backend/src:/usr/src/app/src
+    depends_on:
+      - db-catalog-migrate
+  prod-catalog-be:
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile.prod
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+  test-catalog-be:
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile.test
+    volumes:
+      - ./backend/src:/usr/src/app/src
+      - ./backend/test:/usr/src/app/test
+    depends_on:
+      - db-catalog-migrate
+  db-catalog-migrate:
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile.migrate
+    volumes:
+      - ./backend/src/db.sqlite:/usr/src/app/src/db.sqlite
